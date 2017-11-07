@@ -1,0 +1,35 @@
+apiVersion: apps/v1beta1 # for versions before 1.8.0 use apps/v1beta1
+kind: Deployment
+metadata:
+  name: minecraft
+  namespace: mine
+  labels:
+    app: minecraft-dep
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: minecraft-pod
+  template:
+    metadata:
+      labels:
+        app: minecraft-pod
+    spec:
+      containers:
+      - name: minecraft-server
+        image: openhack/minecraft-server:2.0
+        env:
+            - name: EULA
+              value: "TRUE"
+        volumeMounts:
+            - mountPath: /data
+              name: minecraft-data
+        ports:
+        - containerPort: 25565
+        - containerPort: 25575
+      volumes:
+        - name: minecraft-data
+          azureFile:
+            secretName: azure-secret
+            shareName: minecraft
+            readOnly: false

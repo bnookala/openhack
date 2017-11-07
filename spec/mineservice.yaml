@@ -1,0 +1,18 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: minecraft-service
+  namespace: mine
+spec:
+  type: LoadBalancer
+  selector:
+    app: minecraft-pod
+  ports:
+  - protocol: TCP
+    name: minecraft-server
+    port: 25565
+    targetPort: 25565
+  - protocol: TCP
+    name: minecraft-rcon
+    port: 25575
+    targetPort: 25575
