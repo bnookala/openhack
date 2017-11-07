@@ -1,4 +1,4 @@
-apiVersion: apps/v1beta1 # for versions before 1.8.0 use apps/v1beta1
+apiVersion: apps/v1beta1
 kind: Deployment
 metadata:
   name: minecraft
@@ -21,12 +21,17 @@ spec:
         env:
             - name: EULA
               value: "TRUE"
+            - name: TYPE
+              value: SPIGOT
+            - name: SPIGOT_DOWNLOAD_URL
+              value: "https://cdn.getbukkit.org/spigot/spigot-1.12.2.jar"
         volumeMounts:
             - mountPath: /data
               name: minecraft-data
         ports:
         - containerPort: 25565
         - containerPort: 25575
+        - containerPort: 9225
       volumes:
         - name: minecraft-data
           azureFile:
