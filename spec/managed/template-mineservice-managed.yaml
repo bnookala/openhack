@@ -1,0 +1,20 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: templatemeservice
+  namespace: minepod-managed
+  labels:
+    app: minecraft
+spec:
+  type: LoadBalancer
+  selector:
+    serverName: templatemepod
+  ports:
+  - protocol: TCP
+    name: minecraft-server
+    port: 25565
+    targetPort: 25565
+  - protocol: TCP
+    name: minecraft-rcon
+    port: 25575
+    targetPort: 25575

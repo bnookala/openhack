@@ -1,0 +1,75 @@
+{
+    "kind": "Pod",
+    "apiVersion": "v1",
+    "metadata": {
+        "name": "templateme",
+        "namespace": "minepod-managed",
+        "creationTimestamp": null,
+        "labels": {
+            "app": "minepod-managed",
+            "serverName": "templateme"
+        }
+    },
+    "spec": {
+        "volumes": [
+            {
+                "name": "minecraft-data",
+                "azureFile": {
+                    "secretName": "azure-secret",
+                    "shareName": "minecraft-munaged"
+                }
+            }
+        ],
+        "containers": [
+            {
+                "name": "minecraft-server",
+                "image": "openhack/minecraft-server:2.0",
+                "ports": [
+                    {
+                        "containerPort": 25565,
+                        "protocol": "TCP"
+                    },
+                    {
+                        "containerPort": 25575,
+                        "protocol": "TCP"
+                    },
+                    {
+                        "containerPort": 9225,
+                        "protocol": "TCP"
+                    }
+                ],
+                "env": [
+                    {
+                        "name": "EULA",
+                        "value": "TRUE"
+                    },
+                    {
+                        "name": "TYPE",
+                        "value": "SPIGOT"
+                    },
+                    {
+                        "name": "SPIGOT_DOWNLOAD_URL",
+                        "value": "https://cdn.getbukkit.org/spigot/spigot-1.12.2.jar"
+                    }
+                ],
+                "resources": {},
+                "volumeMounts": [
+                    {
+                        "name": "minecraft-data",
+                        "mountPath": "/data",
+                        "subPath": "templateme"
+                    }
+                ],
+                "terminationMessagePath": "/dev/termination-log",
+                "terminationMessagePolicy": "File",
+                "imagePullPolicy": "IfNotPresent"
+            }
+        ],
+        "restartPolicy": "Always",
+        "terminationGracePeriodSeconds": 30,
+        "dnsPolicy": "ClusterFirst",
+        "securityContext": {},
+        "schedulerName": "default-scheduler"
+    },
+    "status": {}
+}

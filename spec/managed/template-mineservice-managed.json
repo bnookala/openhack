@@ -1,0 +1,37 @@
+{
+    "kind": "Service",
+    "apiVersion": "v1",
+    "metadata": {
+        "name": "templatemeservice",
+        "namespace": "minepod-managed",
+        "creationTimestamp": null,
+        "labels": {
+            "app": "minecraft"
+        }
+    },
+    "spec": {
+        "ports": [
+            {
+                "name": "minecraft-server",
+                "protocol": "TCP",
+                "port": 25565,
+                "targetPort": 25565
+            },
+            {
+                "name": "minecraft-rcon",
+                "protocol": "TCP",
+                "port": 25575,
+                "targetPort": 25575
+            }
+        ],
+        "selector": {
+            "serverName": "templatemepod"
+        },
+        "type": "LoadBalancer",
+        "sessionAffinity": "None",
+        "externalTrafficPolicy": "Cluster"
+    },
+    "status": {
+        "loadBalancer": {}
+    }
+}

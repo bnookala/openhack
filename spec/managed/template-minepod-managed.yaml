@@ -1,0 +1,33 @@
+apiVersion: v1
+kind: Pod
+metadata:
+    name: templateme
+    namespace: minepod-managed
+    labels:
+        app: minepod-managed
+        serverName: templateme
+spec:
+    containers:
+    - name: minecraft-server
+      image: openhack/minecraft-server:2.0
+      env:
+        - name: EULA
+          value: "TRUE"
+        - name: TYPE
+          value: SPIGOT
+        - name: SPIGOT_DOWNLOAD_URL
+          value: "https://cdn.getbukkit.org/spigot/spigot-1.12.2.jar"
+      volumeMounts:
+        - mountPath: /data
+          name: minecraft-data
+          subPath: templateme
+      ports:
+        - containerPort: 25565
+        - containerPort: 25575
+        - containerPort: 9225
+    volumes:
+      - name: minecraft-data
+        azureFile:
+          secretName: azure-secret
+          shareName: minecraft-munaged
+          readOnly: false
