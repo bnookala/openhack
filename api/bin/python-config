@@ -1,4 +1,4 @@
-#!/Users/evlouie/Workspace/OpenHack/API/bin/python
+#!/Users/evlouie/Workspace/openhack/api/bin/python
 
 import sys
 import getopt
