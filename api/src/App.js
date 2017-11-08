@@ -8,11 +8,13 @@ class App extends Component {
   static propTypes = {
     instances: PropTypes.array,
     instanceObjects: PropTypes.array,
+    activeInstanceObjects: PropTypes.array,
   };
 
   static defaultProps = {
     instances: [],
     instanceObjects: [],
+    activeInstanceObjects: [],
   };
 
   constructor(props) {
@@ -20,19 +22,29 @@ class App extends Component {
     this.state = { ...props };
   }
 
-  componentDidMount() {
+  updateInstances = () => {
     getInstances()
       .then(instances => {
         this.setState({ instances });
         const instanceObject = [];
         const promises = instances.map(instance => getInstance(instance.name).then(instance => instance));
         Promise.all(promises).then(instanceObjects => {
+          // const activeInstanceObjects = instanceObjects.filter(
+          //   instanceObject => typeof instanceObject.metadata.deletionTimestamp === "undefined",
+          // );
           this.setState({ instanceObjects });
         });
       })
       .catch(err => {
         console.error(err);
       });
+  };
+
+  componentDidMount() {
+    this.updateInstances();
+    setInterval(() => {
+      this.updateInstances();
+    }, 3000);
   }
 
   render() {

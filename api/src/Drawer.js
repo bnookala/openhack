@@ -63,6 +63,7 @@ const styles = theme => ({
 });
 
 function instanceControls(instance) {
+  const deleted = typeof instance.metadata.deletionTimestamp !== "undefined";
   return (
     <Card style={{ width: "25vw", minWidth: "25vw", marginBottom: "2em" }} key={instance.metadata.name}>
       <CardContent>
@@ -75,12 +76,14 @@ function instanceControls(instance) {
         <Button
           dense
           color="accent"
+          disabled={deleted}
           onClick={() => {
             deletePod(instance.metadata.name);
           }}
         >
           Delete
         </Button>
+        {deleted && <pre>This pod is queued for deletion.</pre>}
       </CardActions>
     </Card>
   );
