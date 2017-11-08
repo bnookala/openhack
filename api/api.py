@@ -46,13 +46,23 @@ def generate_templates():
 
     return pod_name, pod_template, svc_template
 
+def get_service(name):
+    # need to produce external IP
+    api = get_api()
+    services = pykube.Service.objects(api).filter(namespace="mine")
+    service = filter(lambda service: service.get('spec').get('selector').get('serverName') == name, services)
+    return service
 
 
-# Get instance data using  pykube
-def get_instance(instance_id):
-    # IMPLEMENT PYKUBE
-    return instance_object('foo', 'bar', 'baz')
+def external_ip(name, cluster_ip):
+    service = get_service(name)
 
+    address = service.get('status').get('loadBalancer').get('ingress')[0].get('ip')
+
+    if not address:
+        return cluster_ip
+
+    return address
 
 def abort_if_instance_doesnt_exist(instance_id):
     abort(404, message=" {} doesn't exist".format(instance_id))
@@ -98,10 +108,11 @@ class Instances(Resource):
     def get(self):
         ready_pods = filter(lambda pod: pod.get('metadata').get('labels').get('app') == 'minecraft-pod',
                             get_ready_pods())
+
         return list(map(
             lambda pod: instance_object(pod.get('metadata').get('name'),
-                                        pod.get('status').get('podIP') + ":25565",
-                                        pod.get('status').get('podIP') + ":25575"), ready_pods))
+                                        external_ip(pod.get('metadata').get('name'), pod.get('status').get('podIP')) + ":25565",
+                                        external_ip(pod.get('metadata').get('name'), pod.get('status').get('podIP')) + ":25575"), ready_pods))
 
     def post(self):
         args = parser.parse_args()
