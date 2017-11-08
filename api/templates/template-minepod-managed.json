@@ -1,0 +1,119 @@
+{
+    "kind": "Pod",
+    "apiVersion": "v1",
+    "metadata": {
+        "name": "templatemepod",
+        "namespace": "mine",
+        "creationTimestamp": null,
+        "labels": {
+            "app": "minecraft-pod",
+            "serverName": "templatemepod"
+        }
+    },
+    "spec": {
+        "volumes": [
+            {
+                "name": "minecraft-data",
+                "azureFile": {
+                    "secretName": "azure-secret",
+                    "shareName": "minecraft-munaged"
+                }
+            }
+        ],
+        "containers": [
+            {
+                "name": "minecraft-server",
+                "image": "openhack/minecraft-server:2.0",
+                "ports": [
+                    {
+                        "containerPort": 25565,
+                        "protocol": "TCP"
+                    },
+                    {
+                        "containerPort": 25575,
+                        "protocol": "TCP"
+                    },
+                    {
+                        "containerPort": 9225,
+                        "protocol": "TCP"
+                    }
+                ],
+                "env": [
+                    {
+                        "name": "EULA",
+                        "value": "TRUE"
+                    },
+                    {
+                        "name": "TYPE",
+                        "value": "SPIGOT"
+                    },
+                    {
+                        "name": "SPIGOT_DOWNLOAD_URL",
+                        "value": "https://cdn.getbukkit.org/spigot/spigot-1.12.2.jar"
+                    },
+                    {
+                        "name": "MAX_WORLD_SIZE",
+                        "value": "1000"
+                    },
+                    {
+                        "name": "DIFFICULTY",
+                        "value": "peaceful"
+                    },
+                    {
+                        "name": "MAX_PLAYERS",
+                        "value": "100"
+                    },
+                    {
+                        "name": "ANNOUNCE_PLAYER_ACHIEVEMENTS",
+                        "value": "false"
+                    },
+                    {
+                        "name": "GENERATE_STRUCTURES",
+                        "value": "false"
+                    },
+                    {
+                        "name": "SPAWN_ANIMALS",
+                        "value": "false"
+                    },
+                    {
+                        "name": "SPAWN_MONSTERS",
+                        "value": "false"
+                    },
+                    {
+                        "name": "SPAWN_NPCS",
+                        "value": "false"
+                    },
+                    {
+                        "name": "PVP",
+                        "value": "false"
+                    },
+                    {
+                        "name": "MODE",
+                        "value": "creative"
+                    },
+                    {
+                        "name": "VIEW_DISTANCE",
+                        "value": "5"
+                    }
+                ],
+                "resources": {},
+                "volumeMounts": [
+                    {
+                        "name": "minecraft-data",
+                        "mountPath": "/data",
+                        "subPath": "templatemepod"
+                    }
+                ],
+                "terminationMessagePath": "/dev/termination-log",
+                "terminationMessagePolicy": "File",
+                "imagePullPolicy": "IfNotPresent"
+            }
+        ],
+        "restartPolicy": "Always",
+        "terminationGracePeriodSeconds": 30,
+        "dnsPolicy": "ClusterFirst",
+        "securityContext": {},
+        "schedulerName": "default-scheduler"
+    },
+    "status": {}
+}

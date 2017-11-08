@@ -2,6 +2,11 @@ from flask import Flask
 from flask_restful import reqparse, abort, Api, Resource
 import operator
 import pykube
+import os
+import shutil
+
+import template
+import uuid
 
 app = Flask(__name__)
 api = Api(app)
@@ -19,6 +24,26 @@ def instance_object(name, endpoint_minecraft, endpoint_rcon):
             "rcon": endpoint_rcon
         }
     }
+
+def generate_templates():
+    templates = template.Templates()
+
+    pod_uuid = str(uuid.uuid4())
+    pod_name = 'pod-' + pod_uuid
+    svc_name = 'svc-' + pod_uuid
+
+    pod_template = templates.pod_template
+    svc_template = templates.svc_template
+
+    pod_template['metadata']['name'] = pod_name
+    pod_template['metadata']['labels']['serverName'] = pod_name
+    pod_template['spec']['containers'][0]['volumeMounts'][0]['subPath'] = pod_name
+
+    svc_template['metadata']['name'] = svc_name
+    svc_template['spec']['selector']['serverName'] = pod_name
+
+    return pod_name, pod_template, svc_template
+
 
 
 # Get instance data using  pykube
@@ -80,7 +105,24 @@ class Instances(Resource):
     def post(self):
         args = parser.parse_args()
         instance = {}
-        # CREATE INSTANCE
+
+        # get api
+        api = get_api()
+
+        # populate templates
+        pod_name, pod_template, svc_template = generate_templates()
+
+        # creates the /data/pod-some-random-uuid/plugins directory
+        destination = '/data/' + pod_name + '/plugins'
+        os.makedirs(destination)
+
+        # copy the prometheus exporter
+        shutil.copy("./prometheus.jar", destination)
+
+        # create pod, service.
+        pykube.Pod(api, pod_template).create()
+        pykube.Service(api, svc_template).create()
+
         return instance
 
 
