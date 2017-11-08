@@ -27,12 +27,6 @@ def get_instance(instance_id):
     return instance_object('foo', 'bar', 'baz')
 
 
-def update_instance(instance_id, params):
-    instance = get_instance(instance_id)
-    # MODIFY INSTANCE
-    return instance
-
-
 def abort_if_instance_doesnt_exist(instance_id):
     abort(404, message=" {} doesn't exist".format(instance_id))
 
@@ -40,6 +34,7 @@ def abort_if_instance_doesnt_exist(instance_id):
 def get_api():
     api = pykube.HTTPClient(pykube.KubeConfig.from_file("./kubekraft"))
     return api
+
 
 def get_pods():
     api = get_api()
@@ -63,20 +58,12 @@ class Instance(Resource):
     def get(self, instance_id):
         pods = get_pods()
         matching_pods = list(filter(lambda pod: pod.get('metadata').get('name') == instance_id, pods))
-
         return matching_pods[0] if matching_pods else abort_if_instance_doesnt_exist(instance_id)
 
     def delete(self, instance_id):
         abort_if_instance_doesnt_exist(instance_id)
         instance = get_instance(instance_id)
         # DELETE IT AND RETURN DELETED VALUE
-        return instance
-
-    def put(self, instance_id):
-        abort_if_instance_doesnt_exist(instance_id)
-        args = parser.parse_args()
-        instance = get_instance(instance_id)
-        instance = update_instance(instance, args)
         return instance
 
 
