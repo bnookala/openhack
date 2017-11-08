@@ -70,7 +70,8 @@ class Instance(Resource):
 # Instances
 class Instances(Resource):
     def get(self):
-        ready_pods = get_ready_pods()
+        ready_pods = filter(lambda pod: pod.get('metadata').get('labels').get('app') == 'minecraft-pod',
+                            get_ready_pods())
         return list(map(
             lambda pod: instance_object(pod.get('metadata').get('name'),
                                         pod.get('status').get('podIP') + ":25565",
