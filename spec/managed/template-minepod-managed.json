@@ -2,12 +2,12 @@
     "kind": "Pod",
     "apiVersion": "v1",
     "metadata": {
-        "name": "templateme",
-        "namespace": "minepod-managed",
+        "name": "templatemepod",
+        "namespace": "mine",
         "creationTimestamp": null,
         "labels": {
-            "app": "minepod-managed",
-            "serverName": "templateme"
+            "app": "minecraft-pod",
+            "serverName": "templatemepod"
         }
     },
     "spec": {
@@ -50,6 +50,50 @@
                     {
                         "name": "SPIGOT_DOWNLOAD_URL",
                         "value": "https://cdn.getbukkit.org/spigot/spigot-1.12.2.jar"
+                    },
+                    {
+                        "name": "MAX_WORLD_SIZE",
+                        "value": "1000"
+                    },
+                    {
+                        "name": "DIFFICULTY",
+                        "value": "peaceful"
+                    },
+                    {
+                        "name": "MAX_PLAYERS",
+                        "value": "100"
+                    },
+                    {
+                        "name": "ANNOUNCE_PLAYER_ACHIEVEMENTS",
+                        "value": "false"
+                    },
+                    {
+                        "name": "GENERATE_STRUCTURES",
+                        "value": "false"
+                    },
+                    {
+                        "name": "SPAWN_ANIMALS",
+                        "value": "false"
+                    },
+                    {
+                        "name": "SPAWN_MONSTERS",
+                        "value": "false"
+                    },
+                    {
+                        "name": "SPAWN_NPCS",
+                        "value": "false"
+                    },
+                    {
+                        "name": "PVP",
+                        "value": "false"
+                    },
+                    {
+                        "name": "MODE",
+                        "value": "creative"
+                    },
+                    {
+                        "name": "VIEW_DISTANCE",
+                        "value": "5"
                     }
                 ],
                 "resources": {},
@@ -57,7 +101,7 @@
                     {
                         "name": "minecraft-data",
                         "mountPath": "/data",
-                        "subPath": "templateme"
+                        "subPath": "templatemepod"
                     }
                 ],
                 "terminationMessagePath": "/dev/termination-log",

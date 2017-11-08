@@ -3,7 +3,7 @@
     "apiVersion": "v1",
     "metadata": {
         "name": "templatemeservice",
-        "namespace": "minepod-managed",
+        "namespace": "mine",
         "creationTimestamp": null,
         "labels": {
             "app": "minecraft"
@@ -22,6 +22,12 @@
                 "protocol": "TCP",
                 "port": 25575,
                 "targetPort": 25575
+            },
+            {
+                "name": "prometheus-data",
+                "protocol": "TCP",
+                "port": 9225,
+                "targetPort": 9225
             }
         ],
         "selector": {
