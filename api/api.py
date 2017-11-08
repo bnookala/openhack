@@ -1,4 +1,5 @@
 from flask import Flask
+from flask_cors import CORS
 from flask_restful import reqparse, abort, Api, Resource
 import operator
 import pykube
@@ -9,6 +10,7 @@ import template
 import uuid
 
 app = Flask(__name__)
+CORS(app)
 api = Api(app)
 parser = reqparse.RequestParser()
 
@@ -86,11 +88,10 @@ class Instance(Resource):
         return matching_pods[0] if matching_pods else abort_if_instance_doesnt_exist(instance_id)
 
     def delete(self, instance_id):
-        abort_if_instance_doesnt_exist(instance_id)
-        instance = get_instance(instance_id)
-        # DELETE IT AND RETURN DELETED VALUE
-        return instance
-
+        # abort_if_instance_doesnt_exist(instance_id)
+        # instance = get_instance(instance_id)
+        api = get_api()
+        return pykube.Pod.objects(api).filter(namespace="mine").get(name=instance_id).delete()
 
 # Instances
 class Instances(Resource):
