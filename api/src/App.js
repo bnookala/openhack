@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { BrowserRouter as Router } from "react-router-dom";
 import Drawer from "./Drawer";
+import { getInstances, getInstance } from "./lib";
 
 class App extends Component {
   static propTypes = {
@@ -20,16 +21,11 @@ class App extends Component {
   }
 
   componentDidMount() {
-    fetch("http://localhost:5000/instances")
-      .then(resp => resp.json())
+    getInstances()
       .then(instances => {
         this.setState({ instances });
         const instanceObject = [];
-        const promises = instances.map(instance =>
-          fetch(`http://localhost:5000/instances/${instance.name}`)
-            .then(resp => resp.json())
-            .then(instance => instance),
-        );
+        const promises = instances.map(instance => getInstance(instance.name).then(instance => instance));
         Promise.all(promises).then(instanceObjects => {
           this.setState({ instanceObjects });
         });

@@ -1,5 +1,9 @@
 export function getInstances() {
-  return fetch("http://localhost:5000/instances");
+  return fetch("http://localhost:5000/instances").then(resp => resp.json());
+}
+
+export function getInstance(podName) {
+  return fetch(`http://localhost:5000/instances/${podName}`).then(resp => resp.json());
 }
 
 export function createPod() {

@@ -15,4 +15,5 @@ RUN npm install -g serve
 EXPOSE 5000
 EXPOSE 5001
 
+# Flask API on 5000, React SPA on 5001
 CMD serve -s build -p 5001 & python api.py
