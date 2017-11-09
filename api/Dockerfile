@@ -1,6 +1,6 @@
 FROM python:latest
 
-ADD . .
+COPY ./requirements.txt ./
 
 # Python
 RUN pip install -r requirements.txt
@@ -8,7 +8,11 @@ RUN pip install -r requirements.txt
 # Node
 RUN curl -sL https://deb.nodesource.com/setup_8.x | bash
 RUN apt-get install -y build-essential nodejs
+
+COPY ./package.json ./
 RUN npm install
+
+ADD . .
 RUN npm run build
 RUN npm install -g serve
 

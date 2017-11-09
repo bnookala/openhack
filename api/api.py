@@ -1,3 +1,5 @@
+from __future__ import print_function
+
 from flask import Flask
 from flask_cors import CORS
 from flask_restful import reqparse, abort, Api, Resource
@@ -8,6 +10,7 @@ import shutil
 
 import template
 import uuid
+
 
 app = Flask(__name__)
 CORS(app)
@@ -47,6 +50,7 @@ def generate_templates():
     return pod_name, pod_template, svc_template
 
 def get_service(name):
+    print("getting services")
     # need to produce external IP
     api = get_api()
     query = pykube.Service.objects(api).filter(namespace="mine")
@@ -94,7 +98,9 @@ def abort_if_instance_doesnt_exist(instance_id):
 
 
 def get_api():
+    print("getting api")
     api = pykube.HTTPClient(pykube.KubeConfig.from_file("./kubekraft"))
+    print("got the api")
     return api
 
 
@@ -131,6 +137,7 @@ class Instance(Resource):
 # Instances
 class Instances(Resource):
     def get(self):
+        print("getting instances")
         ready_pods = filter(lambda pod: pod.get('metadata').get('labels').get('app') == 'minecraft-pod',
                             get_ready_pods())
 
@@ -170,4 +177,4 @@ api.add_resource(Instances, '/instances')
 api.add_resource(Instance, '/instances/<instance_id>')
 
 if __name__ == '__main__':
-    app.run(debug=True, host='0.0.0.0')
+    app.run(debug=False , host='0.0.0.0')

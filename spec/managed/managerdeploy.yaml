@@ -23,8 +23,10 @@ spec:
           - mountPath: /data
             name: minecraft-data
         ports:
-          - containerPort: 5000
-          - containerPort: 5001
+          - name: manager
+            containerPort: 5000
+          - name: web
+            containerPort: 5001
       volumes:
         - name: minecraft-data
           azureFile:
