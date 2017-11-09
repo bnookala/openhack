@@ -129,10 +129,17 @@ class Instance(Resource):
         return matching_pods[0] if matching_pods else abort_if_instance_doesnt_exist(instance_id)
 
     def delete(self, instance_id):
-        # abort_if_instance_doesnt_exist(instance_id)
-        # instance = get_instance(instance_id)
         api = get_api()
-        return pykube.Pod.objects(api).filter(namespace="mine").get(name=instance_id).delete()
+        pod = pykube.Pod.objects(api).filter(namespace="mine").get(name=instance_id)
+        # Didn't see how to get service from pod instance, so doing some string concat 
+        # to get service name to delete since they have same guid
+        service_name = "svc-" + pod.name[4:len(pod.name)]
+        service = pykube.Service.objects(api).filter(namespace="mine").get(name=service_name)
+        service.delete()
+        pod.delete()
+        # Capture ObjectDoesNotExist and handle gracefully
+        # abort_if_instance_doesnt_exist(instance_id)
+        return True
 
 # Instances
 class Instances(Resource):
