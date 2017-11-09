@@ -16,15 +16,28 @@ spec:
         app: minecraft-manager
     spec:
       containers:
-      - name: minecraft-manager
+      - name: api
         image: bnookala/kubekraft-manager
         imagePullPolicy: Always
+        resources:
+          requests:
+            cpu: 100m
         volumeMounts:
           - mountPath: /data
             name: minecraft-data
         ports:
           - name: manager
             containerPort: 5000
+      - name: web
+        image: bnookala/kubekraft-manager-web
+        imagePullPolicy: Always
+        resources:
+          requests:
+            cpu: 100m
+        volumeMounts:
+          - mountPath: /data
+            name: minecraft-data
+        ports:
           - name: web
             containerPort: 5001
       volumes:

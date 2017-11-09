@@ -42,6 +42,7 @@ def generate_templates():
 
     pod_template['metadata']['name'] = pod_name
     pod_template['metadata']['labels']['serverName'] = pod_name
+    # /data/pod-custom-uuid-4/
     pod_template['spec']['containers'][0]['volumeMounts'][0]['subPath'] = pod_name
 
     svc_template['metadata']['name'] = svc_name
@@ -131,7 +132,7 @@ class Instance(Resource):
     def delete(self, instance_id):
         api = get_api()
         pod = pykube.Pod.objects(api).filter(namespace="mine").get(name=instance_id)
-        # Didn't see how to get service from pod instance, so doing some string concat 
+        # Didn't see how to get service from pod instance, so doing some string concat
         # to get service name to delete since they have same guid
         service_name = "svc-" + pod.name[4:len(pod.name)]
         service = pykube.Service.objects(api).filter(namespace="mine").get(name=service_name)
