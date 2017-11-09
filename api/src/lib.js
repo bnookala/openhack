@@ -7,7 +7,7 @@ export function getInstance(podName) {
 }
 
 export function createPod() {
-  return fetch("http//40.85.191.188:5000/instances", {
+  return fetch("http://40.85.191.188:5000/instances", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
