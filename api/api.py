@@ -49,20 +49,41 @@ def generate_templates():
 def get_service(name):
     # need to produce external IP
     api = get_api()
-    services = pykube.Service.objects(api).filter(namespace="mine")
-    service = filter(lambda service: service.get('spec').get('selector').get('serverName') == name, services)
-    return service
+    query = pykube.Service.objects(api).filter(namespace="mine")
+    services = list(map(lambda service: service.obj, query))
 
+    service = filter(lambda service: service.get('spec').get('selector').get('serverName') == name, services)
+    return service[0]
 
 def external_ip(name, cluster_ip):
     service = get_service(name)
 
-    address = service.get('status').get('loadBalancer').get('ingress')[0].get('ip')
+    if not service:
+        return cluster_ip
+
+    status = service.get('status')
+
+    if not status:
+        return cluster_ip
+
+    load_balancer = status.get('loadBalancer')
+
+    if not load_balancer:
+        return cluster_ip
+
+    ingress = load_balancer.get('ingress')
+
+    if not ingress:
+        return cluster_ip
+
+    address = ingress[0]
 
     if not address:
         return cluster_ip
 
-    return address
+    external_ip = address.get('ip')
+
+    return external_ip
 
 def abort_if_instance_doesnt_exist(instance_id):
     abort(404, message=" {} doesn't exist".format(instance_id))
