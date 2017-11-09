@@ -52,7 +52,11 @@ def get_service(name):
     query = pykube.Service.objects(api).filter(namespace="mine")
     services = list(map(lambda service: service.obj, query))
 
-    service = filter(lambda service: service.get('spec').get('selector').get('serverName') == name, services)
+    service = list(filter(lambda service: service.get('spec').get('selector').get('serverName') == name, services))
+
+    if not service:
+        return None
+
     return service[0]
 
 def external_ip(name, cluster_ip):

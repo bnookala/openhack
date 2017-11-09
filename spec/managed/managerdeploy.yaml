@@ -24,6 +24,7 @@ spec:
             name: minecraft-data
         ports:
           - containerPort: 5000
+          - containerPort: 5001
       volumes:
         - name: minecraft-data
           azureFile:
