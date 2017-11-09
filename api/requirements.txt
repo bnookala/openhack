@@ -3,6 +3,7 @@ certifi==2017.11.5
 chardet==3.0.4
 click==6.7
 Flask==0.12.2
+Flask-Cors==3.0.3
 Flask-RESTful==0.3.6
 httplib2==0.10.3
 idna==2.6
